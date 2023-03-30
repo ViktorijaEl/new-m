@@ -6,11 +6,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-        actions: write
-        contents: read
-#         security-events: write
-       
+#     permissions:
+#         actions: write
+#         contents: read
+# #         security-events: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -39,11 +38,6 @@ jobs:
         with:     
           token: ${{ secrets.vs }}
 
-#       - name: Upload SARIF file
-#         uses: github/codeql-action/upload-sarif@v2
-#         with:
-#           sarif_file: results/go.sarif
-          
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
       - name: go test
@@ -57,5 +51,3 @@ jobs:
         run: helm lint .
       - name: Package Helm chart
         run: helm package .
-
-
