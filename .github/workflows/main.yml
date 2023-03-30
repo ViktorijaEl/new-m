@@ -17,6 +17,9 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.16.1'
+          
+      - name: Initialize Go module
+        run: go mod init
       - name: Checkout repository
         uses: actions/checkout@v3
         
