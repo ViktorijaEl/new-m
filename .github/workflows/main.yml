@@ -10,7 +10,7 @@ jobs:
       actions: read
       contents: read
       security-events: write
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -22,10 +22,10 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: go
-      - name: Initialize Go modules
-        run: go mod init
+      - name: Initialize Go module
+        run: go mod init ViktorijaEl/new-m
       - name: Install dependencies
-        run: go mod tidy
+        run: go mod download
       - name: Build
         run: go build
       - name: Static Code Analysis and Security
@@ -45,3 +45,4 @@ jobs:
         run: helm lint .
       - name: Package Helm chart
         run: helm package .
+
