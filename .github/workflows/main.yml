@@ -6,10 +6,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-#     permissions:
-#         actions: write
-#         contents: read
-# #         security-events: write
+    permissions:
+      actions: write
+      contents: read
+#     security-events: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -38,8 +39,14 @@ jobs:
         with:     
           token: ${{ secrets.vs }}
 
+      - name: Checkout bridgecrewio/checkov-action
+        uses: actions/checkout@v2
+        with:
+          repository: bridgecrewio/checkov-action
+          ref: master
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
+
       - name: go test
         run: go test -v ./...
       - name: Terraform
