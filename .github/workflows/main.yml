@@ -9,7 +9,7 @@ jobs:
     permissions:
       actions: write
       contents: read 
-      security-events: write
+#       security-events: write
 
     steps:
       - name: Checkout code
@@ -30,8 +30,9 @@ jobs:
         
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
+        with:
+          permissions: repository:read,security-events:write
 #           github-token: ${{ secrets.vs }}
-#             repository: read
 
             
 #       - name: Upload SARIF file
