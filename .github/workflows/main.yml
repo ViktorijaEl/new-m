@@ -13,8 +13,13 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: '1.16.1'
+          
+      - name: Initialize Go module
+        run: go mod init
+
       - name: Build
-        run: go build -mod=mod
+        run: go build
+
       - name: Static Code Analysis and Security
         uses: github/codeql-action/analyze@v1
       - name: Checkov scan
