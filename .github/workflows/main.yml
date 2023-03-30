@@ -38,8 +38,13 @@ jobs:
         with:
           skip_check: CKV2_GHA_1
           
-      - name: go test
+      - name: Initialize Go module
+        run: go mod init github.com/ViktorijaEl/new-m
+      - name: Install dependencies
+        run: go get -v -t -d ./...
+      - name: Run tests
         run: go test -v ./...
+        
       - name: Terraform
         run: |
           terraform validate
