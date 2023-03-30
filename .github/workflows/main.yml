@@ -28,6 +28,11 @@ jobs:
       - name: Autobuild
         uses: github/codeql-action/autobuild@v2
         
+      - name: Set up CodeQL
+        uses: github/codeql-action/setup-codeql@v1
+        with:
+          languages: go       
+          
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
