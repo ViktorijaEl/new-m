@@ -24,15 +24,15 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
-          permissions: repository:read,security-events:write
-#           github-token: ${{ secrets.vs }}
           languages: go
       - name: Autobuild
         uses: github/codeql-action/autobuild@v2
         
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
-
+        with:
+          permissions: security-events:write
+#           github-token: ${{ secrets.vs }}
             
 #       - name: Upload SARIF file
 #         uses: github/codeql-action/upload-sarif@v2
