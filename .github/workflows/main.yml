@@ -32,12 +32,14 @@ jobs:
         uses: github/codeql-action/analyze@v2
         with:
           token: ${{ secrets.vs }}
+
       - name: Print SARIF file
         run: ls /home/runner/work/new-m/results/
+
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: /home/runner/work/new-m/results/subdirectory/go.sarif
+          sarif_file: /home/runner/work/new-m/results/go.sarif
           
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
