@@ -33,10 +33,9 @@ jobs:
         with:
           token: ${{ secrets.vs }}
       - name: Upload SARIF file
-        uses: actions/upload-artifact@v2
+        uses: github/codeql-action/upload-sarif@v2
         with:
-          name: SARIF results
-          path: /home/runner/work/new-m/results/go.sarif
+          sarif_file: /home/runner/work/new-m/results/subdirectory/go.sarif
           
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
