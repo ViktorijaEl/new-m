@@ -31,7 +31,7 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
-#           github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.vs }}
           permissions: security-events.write, repository.read
           
       - name: Checkov scan
