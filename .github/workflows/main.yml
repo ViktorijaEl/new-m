@@ -23,11 +23,9 @@ jobs:
       - name: Build
         run: go build			
       - name: Static Code Analysis and Security
-        uses: github/codeql-action/analyze@v1
-		
+        uses: github/codeql-action/analyze@v1		
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
-
       - name: go test
         run: go test -v ./...
       - name: Terraform
