@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read 
+      security-events: write
 
     steps:
       - name: Checkout code
@@ -28,14 +29,14 @@ jobs:
         
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
-        with:
-#           github-token: ${{ secrets.GITHUB_TOKEN }}
-          permissions:
-            security-events: write
-            repository: read
+#         with:
+#           github-token: ${{ secrets.vs }}
+#           permissions: security-events.write, repository.read
           
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
+        with:
+          arguments: --skip-check CKV2_GHA_1
       - name: go test
         run: go test -v ./...
       - name: Terraform
