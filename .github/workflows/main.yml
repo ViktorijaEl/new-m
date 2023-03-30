@@ -36,7 +36,7 @@ jobs:
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
         with:
-          arguments: --skip-check CKV2_GHA_1
+          skip_check: CKV2_GHA_1
           
       - name: go test
         run: go test -v ./...
