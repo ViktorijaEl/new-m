@@ -7,9 +7,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      actions: read
+      actions: write
 #       contents: read
-      security-events: write
+#       security-events: write
 
     steps:
       - name: Checkout code
