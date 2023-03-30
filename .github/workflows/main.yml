@@ -31,8 +31,7 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
-          permissions: security-events:write
-#           github-token: ${{ secrets.vs }}
+          github-token: ${{ secrets.vs1 }}
             
 #       - name: Upload SARIF file
 #         uses: github/codeql-action/upload-sarif@v2
