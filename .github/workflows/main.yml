@@ -22,6 +22,8 @@ jobs:
         run: go mod init
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: go test
+        run: go test -v ./...
         
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
@@ -41,8 +43,6 @@ jobs:
         with:
           skip_check: CKV2_GHA_1
           
-      - name: go test
-        run: go test -v ./...
       - name: Terraform
         run: |
           terraform validate
