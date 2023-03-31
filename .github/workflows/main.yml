@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: codeql-results
-          path: ${{ github.workspace }}/results/go.sarif
+          path: ${{ github.workspace }}/../results/go.sarif
       
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
@@ -44,7 +44,7 @@ jobs:
 #           github_token: ${{ secrets.vs1 }}      
           
       - name: Initialize Go module
-        run: go mod init ${{ github.workspace }}
+        run: go mod init ViktorijaEl/new-m
       - name: Install dependencies
         run: go get -v -t -d ./...
       - name: Run tests
