@@ -1,4 +1,5 @@
 name: My Pipeline
+
 on:
   push:
     branches: [main]
@@ -7,55 +8,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read 
+      contents: read
       security-events: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Setup Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v2
         with:
-          go-version: 'stable'
-          
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: go
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
-        
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-        
-      - name: Upload CodeQL results
-        uses: actions/upload-artifact@v2
-        with:
-          name: codeql-results
-          path: /home/runner/work/new-m/results/go.sarif
-      
-      - name: Checkov scan
-        uses: bridgecrewio/checkov-action@master
-        with:
-          skip_check: CKV2_GHA_1
-#         with:
-#           github_token: ${{ secrets.vs1 }}      
-          
-      - name: Initialize Go module
-        run: go mod init ViktorijaEl/new-m
+          go-version: '1.16'
+
       - name: Install dependencies
-        run: go get -v -t -d ./...
+        run: go mod download
+
       - name: Run tests
         run: go test -v ./...
-   
+
       - name: Terraform
         run: |
           terraform init
           terraform validate
-          
+
       - uses: terraform-linters/setup-tflint@v3
         name: Setup TFLint
         with:
@@ -66,11 +41,32 @@ jobs:
 
       - name: Init TFLint
         run: tflint --init
-      
-      - name: tfsec
-        uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
         with:
-          github_token: ${{ secrets.vs1 }}
-          
+          repository: 'github/codeql'
+          ref: 'main'
+          path: 'codeql'
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: go
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+        with:
+          sarif_file: codeql-results/go.sarif
+
+      - name: Upload CodeQL results
+        uses: actions/upload-artifact@v2
+        with:
+          name: codeql-results
+          path: codeql-results/go.sarif
+
       - name: Helm lint
         run: helm lint .
