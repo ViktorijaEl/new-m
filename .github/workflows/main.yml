@@ -1,7 +1,30 @@
-name: My Pipeline
+name: GitHub Actions Template
 on:
   push:
     branches: [main]
+# inputs:
+#   checkov-directory:
+#     required: true
+#     type: string
+#   checkov-framework:
+#     required: true
+#     type: string
+#   terraform-version:
+#     required: true
+#     type: string
+#   terraform-work-dir:
+#     required: true
+#     type: string
+#   terraform-tflint-version:
+#     required: true
+#     type: string
+#   generic-build-script:
+#     required: false
+#     type: string
+
+# secrets:
+#   github-token:
+#     required: true
 
 jobs:
   build:
@@ -45,8 +68,6 @@ jobs:
       - name: Run tests
         run: go test -v ./...
    
-   
-   
       - name: Terraform
         run: |
           terraform init
@@ -69,6 +90,3 @@ jobs:
           github_token: ${{ secrets.vs }}
           
       - name: Helm lint
-        run: helm lint .
-      - name: Package Helm chart
-        run: helm package .
