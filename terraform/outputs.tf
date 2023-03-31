@@ -2,9 +2,14 @@
 # Create Storage Bucket - Output #
 ##################################
 
-output "gcp_bucket" {
-  value = google_storage_bucket.tf-bucket
+# output "gcp_bucket" {
+#   value = module.bucket.google_storage_bucket.tf-bucket
+# }
+
+output "bucket_name" {
+  value = module.bucket.bucket_name
 }
+
 
 
 output "google_compute_instance" {
