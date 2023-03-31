@@ -45,7 +45,7 @@ jobs:
 #           github_token: ${{ secrets.vs1 }}      
           
       - name: Initialize Go module
-        run: go mod init ViktorijaEl/new-m
+        run: go mod init new-m
       - name: Install dependencies
         run: go get -v -t -d ./...
       - name: Run tests
