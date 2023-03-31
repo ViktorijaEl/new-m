@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: codeql-results
-          path: ${{ github.workspace }}/codeql-sarif
+          path: ${{ github.workspace }}/results/go.sarif
       
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
