@@ -24,23 +24,30 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: go
+          
       - name: Autobuild
         uses: github/codeql-action/autobuild@v2
-        
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
-        
-      - name: Upload results
+
+      - name: Upload CodeQL results
         uses: actions/upload-artifact@v2
         with:
           name: codeql-results
-          path: ${{ env.GITHUB_WORKSPACE }}/main.go
+          path: ${{ github.workspace }}/codeql-sarif
 
-      - name: Download results
+      - name: Download CodeQL results
         uses: actions/download-artifact@v2
         with:
           name: codeql-results
           path: artifacts/
+
+      - name: Upload CodeQL SARIF as an action
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: ${{ github.workspace }}/codeql-sarif/codeql-results.sarif
+        
           
       
       - name: Checkov scan
