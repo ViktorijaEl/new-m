@@ -24,7 +24,9 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: go
-          
+
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Autobuild
         uses: github/codeql-action/autobuild@v2
 
