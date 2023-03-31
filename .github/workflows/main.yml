@@ -47,9 +47,13 @@ jobs:
         
       - name: Terraform
         run: |
+          terraform init
           terraform validate
-          tflint
-          tfsec
+          tflint --version
+          tflint terraform/
+          tfsec --version
+          tfsec terraform/
+          
       - name: Helm lint
         run: helm lint .
       - name: Package Helm chart
