@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read 
-      security-events: write
+#       security-events: write
 
     steps:
       - name: Checkout code
@@ -30,16 +30,18 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-#         with:
-#           name: codeql-results
-#           path: ${{ env.CODEQL_RESULTS_DIR }}
+#       - name: Upload artifacts
+#         uses: actions/upload-artifact@v2
+# #         with:
+# #           name: codeql-results
+# #           path: ${{ env.CODEQL_RESULTS_DIR }}
       
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
+#         with:
+#           skip_check: CKV2_GHA_1
         with:
-          skip_check: CKV2_GHA_1
+          github_token: ${{ secrets.vs }}      
           
       - name: Initialize Go module
         run: go mod init github.com/ViktorijaEl/new-m
