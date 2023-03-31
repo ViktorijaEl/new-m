@@ -20,21 +20,50 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
+To upload and download artifacts in GitHub Actions, you can use the actions/upload-artifact and actions/download-artifact actions. Here's an example of how you can modify your workflow to upload the CodeQL analysis results as an artifact and then download it:
+
+yaml
+Copy code
+name: CodeQL Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           languages: go
+
       - name: Autobuild
         uses: github/codeql-action/autobuild@v2
         
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         
-#       - name: Download results artifact
-#         uses: actions/download-artifact@v2
-#         with:
-#           name: codeql-results
-#           path: artifacts
+      - name: Upload results
+        uses: actions/upload-artifact@v2
+        with:
+          name: codeql-results
+          path: ${{github.workspace}}/qlpacks/codeql-go/analysis-results
+
+      - name: Download results
+        uses: actions/download-artifact@v2
+        with:
+          name: codeql-results
+          path: artifacts/
       
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
