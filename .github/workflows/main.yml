@@ -30,9 +30,8 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
-#           github-token: ${{ secrets.vs }}
-          permissions: security-events.write, repository.read
-          
+          github-token: ${{ secrets.vs }}
+      
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
 #         with:
@@ -44,8 +43,6 @@ jobs:
         run: go get -v -t -d ./...
       - name: Run tests
         run: go test -v ./...
-   
-   
    
       - name: Terraform
         run: |
