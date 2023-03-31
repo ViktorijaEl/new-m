@@ -32,9 +32,9 @@ jobs:
         
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
-        with:
-          name: codeql-results
-          path: ${{ env.CODEQL_RESULTS_DIR }}
+#         with:
+#           name: codeql-results
+#           path: ${{ env.CODEQL_RESULTS_DIR }}
       
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
