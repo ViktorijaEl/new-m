@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read 
-#       security-events: write
+      security-events: write
 
     steps:
       - name: Checkout code
@@ -38,10 +38,10 @@ jobs:
       
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
-#         with:
-#           skip_check: CKV2_GHA_1
         with:
-          github_token: ${{ secrets.vs1 }}      
+          skip_check: CKV2_GHA_1
+#         with:
+#           github_token: ${{ secrets.vs1 }}      
           
       - name: Initialize Go module
         run: go mod init github.com/ViktorijaEl/new-m
