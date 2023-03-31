@@ -41,7 +41,7 @@ jobs:
 #         with:
 #           skip_check: CKV2_GHA_1
         with:
-          github_token: ${{ secrets.vs }}      
+          github_token: ${{ secrets.vs1 }}      
           
       - name: Initialize Go module
         run: go mod init github.com/ViktorijaEl/new-m
@@ -69,7 +69,7 @@ jobs:
       - name: tfsec
         uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
         with:
-          github_token: ${{ secrets.vs }}
+          github_token: ${{ secrets.vs1 }}
           
       - name: Helm lint
         run: helm lint .
