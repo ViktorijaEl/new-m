@@ -2,6 +2,10 @@ name: My Pipeline
 on:
   push:
     branches: [main]
+    
+env:
+  GITHUB_APP_ID: ${{ secrets.GITHUB_APP_ID }}
+  GITHUB_APP_PRIVATE_KEY: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
 
 jobs:
   build:
@@ -37,7 +41,13 @@ jobs:
 #         run: go test ./...
           
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3t
+
+      - name: Authenticate as GitHub App
+        uses: integrations/github-app-auth@v1
+        with:
+          id: ${{ env.GITHUB_APP_ID }}
+          private-key: ${{ env.GITHUB_APP_PRIVATE_KEY }}
         
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
