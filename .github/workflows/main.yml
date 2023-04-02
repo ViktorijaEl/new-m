@@ -27,6 +27,7 @@ jobs:
         run: |
           go mod download
           go mod tidy
+          go mod download github.com/gorilla/mux
           
       - name: Build
         run: go build
@@ -40,7 +41,8 @@ jobs:
       - name: Authenticate with GitHub App
         run: |
           go run main.go -app-id ${{ secrets.APP_ID }} -private-key "${{ secrets.APP_PRIVATE_KEY }}"
-
+          go mod download github.com/gorilla/mux
+          
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
         with:
