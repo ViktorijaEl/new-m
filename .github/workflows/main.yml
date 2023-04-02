@@ -23,23 +23,28 @@ jobs:
         with:
           go-version: 'stable'
 
+
       - name: Get dependencies
         run: |
           go mod download
           go get -u github.com/gorilla/mux
           go mod tidy
-          
-      - name: Build
+
+      - name: Update package dependencies
         run: |
           cd my-app-vs-app-auth
           ls -al
           go mod tidy
           go build .
 
+      - name: Build
+        run: |
+          cd my-app-vs-app-auth
+          go build .
+
       - name: Test
         run: |
           cd my-app-vs-app-auth
-          ls -al
           go test -v ./...
 
       - name: Download repository
