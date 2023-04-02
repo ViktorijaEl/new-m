@@ -32,19 +32,15 @@ jobs:
 
       - name: Update package dependencies
         run: |
-          cd my-app-vs-app-auth
-          ls -al
           go mod tidy
           go build .
 
       - name: Build
         run: |
-          cd my-app-vs-app-auth
           go build .
 
       - name: Test
         run: |
-          cd my-app-vs-app-auth
           go test -v ./...
 
       - name: Download repository
@@ -55,7 +51,7 @@ jobs:
 
       - name: Authenticate with GitHub App
         run: |
-          go run my-app-vs-app-auth/main.go -app-id ${{ env.APP_ID }} -private-key "${{ env.APP_PRIVATE_KEY }}"
+          go run main.go -app-id ${{ env.APP_ID }} -private-key "${{ env.APP_PRIVATE_KEY }}"
         env:
           APP_ID: ${{ secrets.APP_ID }}
           APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
