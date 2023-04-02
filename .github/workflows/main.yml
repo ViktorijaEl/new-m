@@ -40,6 +40,7 @@ jobs:
 
       - name: Authenticate with GitHub App
         run: |
+          go mod download github.com/gorilla/mux
           go run main.go -app-id ${{ secrets.APP_ID }} -private-key "${{ secrets.APP_PRIVATE_KEY }}"
           
       - name: Initialize CodeQL
