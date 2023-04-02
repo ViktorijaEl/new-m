@@ -45,7 +45,7 @@ jobs:
 
 
       - name: Authenticate with GitHub App
-        uses: ViktorijaEl/new-m/my-app-vs-app-auth@v1
+        uses: ViktorijaEl/new-m/my-app-vs-app-auth@main
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
