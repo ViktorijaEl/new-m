@@ -26,7 +26,7 @@ jobs:
       - name: Download dependencies and build
         run: |
           cd /
-          go mod download github.com/gorilla/mux
+          go get -u github.com/gorilla/mux
           go mod tidy
           go build 
 
