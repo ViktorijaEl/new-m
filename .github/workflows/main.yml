@@ -48,11 +48,10 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         
-      - name: Upload CodeQL results
-        uses: actions/upload-artifact@v3
         with:
           name: codeql-results
-          path: ${{ env.CODEQL_RESULTS_PATH }}
+          path: ${{ github.workspace }}/results/go.sarif
+          if-no-files-found: warn
 #           path: /home/runner/work/new-m/results/go.sarif
 
       - name: Checkov scan
