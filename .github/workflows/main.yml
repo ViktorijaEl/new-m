@@ -25,18 +25,20 @@ jobs:
 
       - name: Get dependencies
         run: |
-          cd main
+          cd my-app-vs-app-auth
           go mod download github.com/gorilla/mux
           go mod tidy
 
       - name: Build
         run: |
-          cd main
+          cd my-app-vs-app-auth
+          go mod download github.com/gorilla/mux
+          go mod tidy
           go build .
 
       - name: Test
         run: |
-          cd main
+          cd my-app-vs-app-auth
           go test -v ./...
 
       - name: Download My App VS App Auth
