@@ -32,8 +32,10 @@ jobs:
 
       - name: Update package dependencies
         run: |
+          go mod download
+          go get -u github.com/gorilla/mux
           go mod tidy
-          go build .
+          go mod download github.com/gorilla/mux
 
       - name: Build
         run: |
