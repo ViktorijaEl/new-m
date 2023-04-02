@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         
       - name: Setup Go
         uses: actions/setup-go@v3
@@ -41,7 +41,6 @@ jobs:
 #         run: go test ./...
           
 
-      - uses: actions/checkout@v2
       - name: Authenticate with GitHub App
         uses: ViktorijaEl/new-m/my-app-vs-app-auth@main
         with:
@@ -49,7 +48,7 @@ jobs:
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
           
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
@@ -97,4 +96,3 @@ jobs:
           
       - name: Helm lint
         run: helm lint .
-
