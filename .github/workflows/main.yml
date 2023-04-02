@@ -43,11 +43,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Authenticate as GitHub App
+      - name: Authenticate with GitHub App
         uses: integrations/github-app-auth@v1
         with:
-          id: ${{ env.APP_ID }}
-          private-key: ${{ env.APP_PRIVATE_KEY }}
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.PRIVATE_KEY }}
         
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
