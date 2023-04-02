@@ -45,7 +45,7 @@ jobs:
 
 
       - name: Authenticate with GitHub App
-        uses: ViktorijaEl/new-m/.github/actions/wokflow-application-token-action@v1
+        uses: ViktorijaEl/wokflow-application-token-action@v1
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
