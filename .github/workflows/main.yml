@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: codeql-results
-          path: ${{ github.workspace }}/results/go.sarif
+          path: ${{ env.CODEQL_RESULTS_PATH }}
 #           path: /home/runner/work/new-m/results/go.sarif
 
       - name: Checkov scan
