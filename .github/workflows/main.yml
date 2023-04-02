@@ -4,8 +4,8 @@ on:
     branches: [main]
     
 env:
-  GITHUB_APP_ID: ${{ secrets.APP_ID }}
-  GITHUB_APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+  APP_ID: ${{ secrets.APP_ID }}
+  APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
 
 
 jobs:
