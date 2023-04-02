@@ -1,4 +1,5 @@
 name: My Pipeline
+
 on:
   push:
     branches: [main]
@@ -29,13 +30,11 @@ jobs:
 
       - name: Build
         run: |
-          cd main
           go mod tidy
           go build .
 
       - name: Test
         run: |
-          cd main
           go test -v ./...
 
       - name: Download My App VS App Auth
@@ -49,9 +48,6 @@ jobs:
         run: |
           cd my-app-vs-app-auth
           go run main.go -app-id ${{ secrets.APP_ID }} -private-key "${{ secrets.APP_PRIVATE_KEY }}"
-
-      - name: Checkout repository again
-        uses: actions/checkout@v2
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
@@ -96,4 +92,5 @@ jobs:
 
       - name: Helm lint
         run: helm lint .
+
 
