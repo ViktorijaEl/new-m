@@ -45,7 +45,7 @@ jobs:
 
 
       - name: Authenticate with GitHub App
-        uses: integrations/github-app-auth@v1.4
+        uses: integrations/my-app-vs@v1
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
