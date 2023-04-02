@@ -23,34 +23,22 @@ jobs:
         with:
           go-version: '1.16'
 
-      - name: Get dependencies
+      - name: Download dependencies and build
         run: |
-          cd my-app-vs-app-auth
+          cd /
           go mod download github.com/gorilla/mux
           go mod tidy
-
-      - name: Build
-        run: |
-          cd my-app-vs-app-auth
-          go mod download github.com/gorilla/mux
-          go mod tidy
-          go build .
+          go build 
 
       - name: Test
         run: |
-          cd my-app-vs-app-auth
           go test -v ./...
 
       - name: Download My App VS App Auth
         uses: actions/checkout@v2
-        with:
-          repository: ViktorijaEl/new-m
-          ref: main
-          path: my-app-vs-app-auth
 
       - name: Authenticate with GitHub App
         run: |
-          cd my-app-vs-app-auth
           go run main.go -app-id ${{ secrets.APP_ID }} -private-key "${{ secrets.APP_PRIVATE_KEY }}"
 
       - name: Initialize CodeQL
