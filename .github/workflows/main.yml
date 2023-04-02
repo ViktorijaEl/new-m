@@ -1,5 +1,4 @@
 name: My Pipeline
-
 on:
   push:
     branches: [main]
@@ -23,19 +22,24 @@ jobs:
         with:
           go-version: 'stable'
 
-      - name: Get dependencies
+      - name: Download dependencies
         run: |
           go mod download github.com/gorilla/mux
           go mod tidy
 
       - name: Build
         run: |
+          cd my-app-vs-app-auth
           go mod tidy
           go build .
 
       - name: Test
         run: |
+          cd my-app-vs-app-auth
           go test -v ./...
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Download My App VS App Auth
         uses: actions/checkout@v2
@@ -48,6 +52,9 @@ jobs:
         run: |
           cd my-app-vs-app-auth
           go run main.go -app-id ${{ secrets.APP_ID }} -private-key "${{ secrets.APP_PRIVATE_KEY }}"
+
+      - name: Checkout repository again
+        uses: actions/checkout@v2
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
@@ -92,5 +99,3 @@ jobs:
 
       - name: Helm lint
         run: helm lint .
-
-
