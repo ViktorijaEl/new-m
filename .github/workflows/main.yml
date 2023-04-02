@@ -29,10 +29,15 @@ jobs:
           go mod tidy
 
       - name: Build
-        run: go build
+        run: |
+          cd my-app-vs-app-auth
+          go mod tidy
+          go build .
 
       - name: Test
-        run: go test ./...
+        run: |
+          cd my-app-vs-app-auth
+          go test -v ./...
 
       - name: Checkout repository
         uses: actions/checkout@v2
