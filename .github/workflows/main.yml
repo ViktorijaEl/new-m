@@ -50,9 +50,9 @@ jobs:
         
         with:
           name: codeql-results
-          path: ${{ github.workspace }}/results/go.sarif
-          if-no-files-found: warn
-#           path: /home/runner/work/new-m/results/go.sarif
+#           path: ${{ github.workspace }}/results/go.sarif
+#           if-no-files-found: warn
+          path: /home/runner/work/new-m/results/go.sarif
 
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
