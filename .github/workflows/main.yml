@@ -27,23 +27,16 @@ jobs:
           go mod download github.com/gorilla/mux
           go mod tidy
 
-      - name: Check if directory exists
-        run: |
-          if [ ! -d "my-app-vs-app-auth" ]; then mkdir my-app-vs-app-auth; fi
-
       - name: Build
         run: |
-          cd my-app-vs-app-auth
+          cd main
           go mod tidy
           go build .
 
       - name: Test
         run: |
-          cd my-app-vs-app-auth
+          cd main
           go test -v ./...
-
-      - name: Checkout repository
-        uses: actions/checkout@v2
 
       - name: Download My App VS App Auth
         uses: actions/checkout@v2
@@ -103,3 +96,4 @@ jobs:
 
       - name: Helm lint
         run: helm lint .
+
