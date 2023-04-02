@@ -41,7 +41,7 @@ jobs:
 #         run: go test ./...
           
       - name: Checkout repository
-        uses: actions/checkout@v3t
+        uses: actions/checkout@v3
 
       - name: Authenticate as GitHub App
         uses: integrations/github-app-auth@v1
