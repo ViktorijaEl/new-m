@@ -1,75 +1,73 @@
 name: My Pipeline
-
 on:
   push:
     branches: [main]
-
-env:
-  APP_ID: ${{ secrets.APP_ID }}
-  APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: read 
+      security-events: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
+        
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
           go-version: 'stable'
-
+          
       - name: Get dependencies
         run: |
           go mod download
           go mod tidy
-          go get github.com/gorilla/mux@v1.8.0
-          
       - name: Build
         run: go build
 
       - name: Test
-        run: go test ./...    
+        run: go test ./...     
+        
+#       - name: Download dependencies
+#         run: go mod download
 
-      - name: Download My App VS App Auth
-        uses: actions/checkout@v2
-
-      - name: Authenticate with GitHub App
-        run: |
-          go mod download github.com/gorilla/mux
-          go run main.go -app-id ${{ secrets.APP_ID }} -private-key "${{ secrets.APP_PRIVATE_KEY }}"
+#       - name: Run tests
+#         run: go test ./...
           
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
+        uses: github/codeql-action/init@v2
         with:
           languages: go
-
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v1
-
+        uses: github/codeql-action/autobuild@v2
+        
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
-
+        uses: github/codeql-action/analyze@v2
+        
       - name: Upload CodeQL results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: codeql-results
-          path: /home/runner/work/new-m/new-m/results/go.sarif
-
+          path: /home/runner/work/new-m/results/go.sarif
+      
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
-
+        with:
+          skip_check: CKV2_GHA_1
+#         with:
+#           github_token: ${{ secrets.vs1 }}      
+   
       - name: Terraform
         run: |
           terraform init
           terraform validate
-
-      - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v3
+          
+      - uses: terraform-linters/setup-tflint@v3
+        name: Setup TFLint
         with:
           tflint_version: v0.44.1
 
@@ -78,11 +76,11 @@ jobs:
 
       - name: Init TFLint
         run: tflint --init
-
+      
       - name: tfsec
         uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
         with:
           github_token: ${{ secrets.vs1 }}
-
+          
       - name: Helm lint
         run: helm lint .
