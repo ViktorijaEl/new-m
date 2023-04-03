@@ -5,17 +5,11 @@ on:
     branches: [main]
 
   workflow_dispatch:
-    inputs:
-      go-version:
-        required: true
-        default: 'stable'
-
-      terraform-tflint-version:
-        required: true
-        default: 'v0.44.1'
-
+  
 env:
   CODEQL_RESULTS_PATH: /home/runner/work/new-m/results/go.sarif
+  go-version: 'stable'
+  terraform-tflint-version: 'v0.44.1'
   
 jobs:
   build:
@@ -31,8 +25,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-#           go-version: 'stable'
-          go-version: ${{ inputs.go_version }}
+          go-version: ${{ env.go-version }}
 
       - name: Get dependencies
         run: |
@@ -53,8 +46,6 @@ jobs:
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
         with:
-#           directory: ${{ inputs.checkov-directory }}
-#           framework: ${{ inputs.checkov-framework }}
           skip_check: CKV2_GHA_1
           
       - name: Terraform
@@ -65,7 +56,7 @@ jobs:
       - uses: terraform-linters/setup-tflint@v3
         name: Setup TFLint
         with:
-          tflint_version: ${{ inputs.tflint_version }}
+          tflint_version: ${{ env.terraform-tflint-version }}
 
       - name: Show version
         run: tflint --version
