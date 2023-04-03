@@ -74,6 +74,8 @@ jobs:
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
         with:
+          directory: ${{ inputs.checkov-directory }}
+          framework: ${{ inputs.checkov-framework }}
           skip_check: CKV2_GHA_1
           
       - name: Terraform
