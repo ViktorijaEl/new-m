@@ -95,7 +95,7 @@ jobs:
       - name: tfsec
         uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
         with:
-          github_token: ${{ secrets.github-token }}
+          github_token: ${{ secrets.vs1 }}
 
       - name: Helm lint
         run: helm lint .
