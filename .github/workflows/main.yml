@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   
 env:
-  CODEQL_RESULTS_PATH: ${{ github.workspace }}/results/go.sarif
+  CODEQL_RESULTS_PATH: results/go.sarif
   go-version: 'stable'
   terraform-tflint-version: 'v0.44.1'
 
@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: codeql-results
-          path: ${{ env.CODEQL_RESULTS_PATH }}
+          path: ${{ github.workspace }}/${{ env.CODEQL_RESULTS_PATH }
 
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
