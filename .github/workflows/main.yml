@@ -4,26 +4,16 @@ on:
   push:
     branches: [main]
 
-  workflow_call:
+  workflow_dispatch:
     inputs:
-      checkov-directory:
+      go-version:
         required: true
-        type: string
-      checkov-framework:
-        required: true
-        type: string
-      terraform-version:
-        required: true
-        type: string
-      terraform-work-dir:
-        required: true
-        type: string
+        default: 'stable'
+
       terraform-tflint-version:
         required: true
-        type: string
-      generic-build-script:
-        required: false
-        type: string
+        default: 'v0.44.1'
+
 env:
   CODEQL_RESULTS_PATH: /home/runner/work/new-m/results/go.sarif
   
@@ -41,7 +31,8 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: 'stable'
+#           go-version: 'stable'
+          go-version: ${{ inputs.go_version }}
 
       - name: Get dependencies
         run: |
@@ -52,18 +43,6 @@ jobs:
 
       - name: Test
         run: go test ./...
-
-#       # Add the steps for your secondary pipeline here, using the inputs
-#       # passed in from the workflow call
-#       - name: Run Secondary Pipeline
-#         uses: ./.github/workflows/secondary-pipeline
-#         with:
-#           checkov-directory: ${{ github.event.inputs.checkov-directory }}
-#           checkov-framework: ${{ github.event.inputs.checkov-framework }}
-#           terraform-version: ${{ github.event.inputs.terraform-version }}
-#           terraform-work-dir: ${{ github.event.inputs.terraform-work-dir }}
-#           terraform-tflint-version: ${{ github.event.inputs.terraform-tflint-version }}
-#           generic-build-script: ${{ github.event.inputs.generic-build-script }}
 
       - name: Upload CodeQL results
         uses: actions/upload-artifact@v3
@@ -86,7 +65,7 @@ jobs:
       - uses: terraform-linters/setup-tflint@v3
         name: Setup TFLint
         with:
-          tflint_version: ${{ github.event.inputs.terraform-tflint-version }}
+          tflint_version: ${{ inputs.tflint_version }}
 
       - name: Show version
         run: tflint --version
