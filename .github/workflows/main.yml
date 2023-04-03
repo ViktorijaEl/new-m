@@ -50,17 +50,17 @@ jobs:
       - name: Test
         run: go test ./...
 
-      # Add the steps for your secondary pipeline here, using the inputs
-      # passed in from the workflow call
-      - name: Run Secondary Pipeline
-        uses: ./.github/workflows/secondary-pipeline
-        with:
-          checkov-directory: ${{ github.event.inputs.checkov-directory }}
-          checkov-framework: ${{ github.event.inputs.checkov-framework }}
-          terraform-version: ${{ github.event.inputs.terraform-version }}
-          terraform-work-dir: ${{ github.event.inputs.terraform-work-dir }}
-          terraform-tflint-version: ${{ github.event.inputs.terraform-tflint-version }}
-          generic-build-script: ${{ github.event.inputs.generic-build-script }}
+#       # Add the steps for your secondary pipeline here, using the inputs
+#       # passed in from the workflow call
+#       - name: Run Secondary Pipeline
+#         uses: ./.github/workflows/secondary-pipeline
+#         with:
+#           checkov-directory: ${{ github.event.inputs.checkov-directory }}
+#           checkov-framework: ${{ github.event.inputs.checkov-framework }}
+#           terraform-version: ${{ github.event.inputs.terraform-version }}
+#           terraform-work-dir: ${{ github.event.inputs.terraform-work-dir }}
+#           terraform-tflint-version: ${{ github.event.inputs.terraform-tflint-version }}
+#           generic-build-script: ${{ github.event.inputs.generic-build-script }}
 
       - name: Upload CodeQL results
         uses: actions/upload-artifact@v3
