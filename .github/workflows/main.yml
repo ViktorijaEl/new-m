@@ -1,7 +1,28 @@
 name: My Pipeline
+
 on:
   push:
     branches: [main]
+
+inputs:
+  checkov-directory:
+    required: true
+    type: string
+  checkov-framework:
+    required: true
+    type: string
+  terraform-version:
+    required: true
+    type: string
+  terraform-work-dir:
+    required: true
+    type: string
+  terraform-tflint-version:
+    required: true
+    type: string
+  generic-build-script:
+    required: false
+    type: string
 
 env:
   CODEQL_RESULTS_PATH: /home/runner/work/new-m/results/go.sarif
@@ -62,7 +83,7 @@ jobs:
         with:
           skip_check: CKV2_GHA_1
 #         with:
-#           github_token: ${{ secrets.vs1 }}      
+#           github_token: ${{ secrets.github-token }}      
    
       - name: Terraform
         run: |
@@ -72,7 +93,7 @@ jobs:
       - uses: terraform-linters/setup-tflint@v3
         name: Setup TFLint
         with:
-          tflint_version: v0.44.1
+          tflint_version: ${{ inputs.terraform-tflint-version }}
 
       - name: Show version
         run: tflint --version
@@ -83,7 +104,7 @@ jobs:
       - name: tfsec
         uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
         with:
-          github_token: ${{ secrets.vs1 }}
+          github_token: ${{ secrets.github-token }}
           
       - name: Helm lint
         run: helm lint .
