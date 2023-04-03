@@ -3,6 +3,7 @@ name: My Pipeline
 on:
   push:
     branches: [main]
+
   workflow_call:
     inputs:
       checkov-directory:
@@ -23,7 +24,9 @@ on:
       generic-build-script:
         required: false
         type: string
-
+env:
+  CODEQL_RESULTS_PATH: /home/runner/work/new-m/results/go.sarif
+  
 jobs:
   build:
     runs-on: ubuntu-latest
