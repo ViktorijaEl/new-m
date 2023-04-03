@@ -4,26 +4,6 @@ on:
   push:
     branches: [main]
 
-inputs:
-  checkov-directory:
-    required: true
-    type: string
-  checkov-framework:
-    required: true
-    type: string
-  terraform-version:
-    required: true
-    type: string
-  terraform-work-dir:
-    required: true
-    type: string
-  terraform-tflint-version:
-    required: true
-    type: string
-  generic-build-script:
-    required: false
-    type: string
-
 env:
   CODEQL_RESULTS_PATH: /home/runner/work/new-m/results/go.sarif
 
@@ -34,6 +14,26 @@ jobs:
       contents: read 
       security-events: write
 
+    inputs:
+      checkov-directory:
+        required: true
+        type: string
+      checkov-framework:
+        required: true
+        type: string
+      terraform-version:
+        required: true
+        type: string
+      terraform-work-dir:
+        required: true
+        type: string
+      terraform-tflint-version:
+        required: true
+        type: string
+      generic-build-script:
+        required: false
+        type: string
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
