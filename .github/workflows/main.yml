@@ -39,7 +39,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: codeql-results
-          path: ${{ $GITHUB_WORKSPACE/${{ env.CODEQL_RESULTS_PATH }}
+          path: $GITHUB_WORKSPACE/${{ env.CODEQL_RESULTS_PATH }}
 
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
