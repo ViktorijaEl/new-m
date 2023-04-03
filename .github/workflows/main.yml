@@ -3,46 +3,43 @@ name: My Pipeline
 on:
   push:
     branches: [main]
-
-inputs:
-  checkov-directory:
-    required: true
-    type: string
-  checkov-framework:
-    required: true
-    type: string
-  terraform-version:
-    required: true
-    type: string
-  terraform-work-dir:
-    required: true
-    type: string
-  terraform-tflint-version:
-    required: true
-    type: string
-  generic-build-script:
-    required: false
-    type: string
-
-env:
-  CODEQL_RESULTS_PATH: /home/runner/work/new-m/results/go.sarif
+  workflow_call:
+    inputs:
+      checkov-directory:
+        required: true
+        type: string
+      checkov-framework:
+        required: true
+        type: string
+      terraform-version:
+        required: true
+        type: string
+      terraform-work-dir:
+        required: true
+        type: string
+      terraform-tflint-version:
+        required: true
+        type: string
+      generic-build-script:
+        required: false
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read 
+      contents: read
       security-events: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        
+
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
           go-version: 'stable'
-          
+
       - name: Get dependencies
         run: |
           go mod download
@@ -51,60 +48,51 @@ jobs:
         run: go build
 
       - name: Test
-        run: go test ./...     
-        
-#       - name: Download dependencies
-#         run: go mod download
+        run: go test ./...
 
-#       - name: Run tests
-#         run: go test ./...
-          
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+      # Add the steps for your secondary pipeline here, using the inputs
+      # passed in from the workflow call
+      - name: Run Secondary Pipeline
+        uses: ./.github/workflows/secondary-pipeline
         with:
-          languages: go
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
-        
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-        
+          checkov-directory: ${{ github.event.inputs.checkov-directory }}
+          checkov-framework: ${{ github.event.inputs.checkov-framework }}
+          terraform-version: ${{ github.event.inputs.terraform-version }}
+          terraform-work-dir: ${{ github.event.inputs.terraform-work-dir }}
+          terraform-tflint-version: ${{ github.event.inputs.terraform-tflint-version }}
+          generic-build-script: ${{ github.event.inputs.generic-build-script }}
+
       - name: Upload CodeQL results
         uses: actions/upload-artifact@v3
         with:
           name: codeql-results
           path: ${{ env.CODEQL_RESULTS_PATH }}
-      
+
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
         with:
           skip_check: CKV2_GHA_1
-#         with:
-#           github_token: ${{ secrets.github-token }}      
-   
+          
       - name: Terraform
         run: |
           terraform init
           terraform validate
-          
+
       - uses: terraform-linters/setup-tflint@v3
         name: Setup TFLint
         with:
-          tflint_version: ${{ inputs.terraform-tflint-version }}
+          tflint_version: ${{ github.event.inputs.terraform-tflint-version }}
 
       - name: Show version
         run: tflint --version
 
       - name: Init TFLint
         run: tflint --init
-      
+
       - name: tfsec
         uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
         with:
           github_token: ${{ secrets.github-token }}
-          
+
       - name: Helm lint
         run: helm lint .
