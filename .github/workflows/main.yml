@@ -19,17 +19,26 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: ${{ env.go-version }}
-
-      - name: Get dependencies
-        run: |
-          go mod download
-          go mod tidy
           
+      - name: Get dependencies
+        run: go get -v -t -d ./...
+
       - name: Build
-        run: go build
+        run: go build -v ./...
 
       - name: Test
-        run: go test ./...
+        run: go test -v ./...
+
+#       - name: Get dependencies
+#         run: |
+#           go mod download
+#           go mod tidy
+          
+#       - name: Build
+#         run: go build
+
+#       - name: Test
+#         run: go test ./...
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
