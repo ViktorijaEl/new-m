@@ -61,18 +61,17 @@ jobs:
     needs: build
     permissions:
       contents: read
-      security-events: write
       actions: read
       
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+        
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
-        with:
-          skip_check: CKV2_GHA_1
+#         with:
+#           skip_check: CKV2_GHA_1
           
       - name: Terraform
         run: |
