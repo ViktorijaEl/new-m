@@ -7,10 +7,16 @@ env:
   CODEQL_RESULTS_PATH: ${{ github.workspace }}
   go-version: 'stable'
   terraform-tflint-version: 'v0.44.1'
-
+  
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+  
 jobs:
   build:
     runs-on: ubuntu-latest
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -58,15 +64,17 @@ jobs:
           path: ${{ env.CODEQL_RESULTS_PATH }}
 
   scan:
-    needs: build
+    needs: build     
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       actions: read
       
-    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+
         
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
