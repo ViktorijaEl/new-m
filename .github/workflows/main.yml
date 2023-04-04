@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ env.go-version }}
 
@@ -43,10 +43,21 @@ jobs:
         uses: github/codeql-action/analyze@v2
 
       - name: Upload CodeQL results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: codeql-results
           path: ${{ env.CODEQL_RESULTS_PATH }}
+
+  scan:
+    needs: build
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
@@ -78,39 +89,3 @@ jobs:
 
       - name: Helm lint
         run: helm lint .
-
-  scan:
-    permissions:
-      contents: read # for actions/checkout to fetch code
-      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
-      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: go
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-
-      - name: Upload CodeQL results
-        uses: actions/upload-artifact@v3
-        with:
-          name: codeql-results
-          path: ${{ env.CODEQL_RESULTS_PATH }}
-          
-      - name: Checkov scan
-        uses: bridgecrewio/checkov-action@master
-#         with:
-#           skip_check: CKV2_GHA_1
-          
-     
-
