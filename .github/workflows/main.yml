@@ -71,6 +71,8 @@ jobs:
 
       - name: Init TFLint
         run: tflint --init
+      - name: Run TFLint
+        run: tflint -f compact
 
       - name: tfsec
         uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
