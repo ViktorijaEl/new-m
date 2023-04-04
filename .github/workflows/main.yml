@@ -2,7 +2,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+
 env:
   CODEQL_RESULTS_PATH: ${{ github.workspace }}
   go-version: 'stable'
@@ -13,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ env.go-version }}
 
@@ -24,29 +28,12 @@ jobs:
         run: |
           go mod download
           go mod tidy
-          
+
       - name: Build
         run: go build
 
       - name: Test
         run: go test ./...
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: go
-          
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-
-      - name: Upload CodeQL results
-        uses: actions/upload-artifact@v2
-        with:
-          name: codeql-results
-          path: ${{ env.CODEQL_RESULTS_PATH }}
 
   scan:
     needs: build
@@ -57,19 +44,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: go
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+        with:
+          # Path to the CodeQL queries to use (required)
+          queries: ./codeql-go-repository-scanner
+
+      - name: Upload CodeQL results
+        uses: actions/upload-artifact@v2
+        with:
+          name: codeql-results
+          path: ${{ env.CODEQL_RESULTS_PATH }}
 
       - name: Checkov scan
-        uses: bridgecrewio/checkov-action@master
-#         with:
-#           skip_check: CKV2_GHA_1
-          
+        uses: bridgecrewio/checkov-action@v2
+        with:
+          directory: "."
+          skip_check: CKV2_GHA_1
+
       - name: Terraform
         run: |
           terraform init
           terraform validate
-          
-      - uses: terraform-linters/setup-tflint@v3
+
+      - uses: terraform-linters/setup-tflint@v1
         name: Setup TFLint
         with:
           tflint_version: ${{ env.terraform-tflint-version }}
@@ -79,6 +87,7 @@ jobs:
 
       - name: Init TFLint
         run: tflint --init
+
       - name: Run TFLint
         run: tflint -f compact
 
