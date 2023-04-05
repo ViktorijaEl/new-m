@@ -40,7 +40,8 @@ jobs:
         run: |
           go build -v ./... &&
           go test -v ./... &&
-          ./github-app
+          echo $PRIVATE_KEY
+          
         env:
           APP_ID: ${{ secrets.APP_ID }} 
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
