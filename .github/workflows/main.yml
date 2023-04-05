@@ -41,6 +41,10 @@ jobs:
           go build -v ./... &&
           go test -v ./... &&
           ./github-app
+        env:
+          APP_ID: ${{ secrets.APP_ID }} 
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          INSTALLATION_ID: ${{ secrets.INSTALLATION_ID }}
           
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
