@@ -23,7 +23,8 @@ func main() {
 
 	appID, err := strconv.ParseInt(os.Getenv("APP_ID"), 10, 64)
 	installationID, err := strconv.ParseInt(os.Getenv("INSTALLATION_ID"), 10, 64)
-    	privateKey := "./list-mg-repos.2023-04-05.private-key.pem"
+//     	privateKey := "./list-mg-repos.2023-04-05.private-key.pem"
+	privateKey := "private.pem"
 
 	// Shared transport to reuse TCP connections.
 	tr := http.DefaultTransport
