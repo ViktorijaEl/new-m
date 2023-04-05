@@ -26,7 +26,8 @@ func main() {
 //     	privateKey := "./list-mg-repos.2023-04-05.private-key.pem"
 // 	privateKey := "private.pem"
 	privateKey := os.Getenv("PRIVATE_KEY")
-	fmt.Println(privateKey)
+	fmt.Println("PRIVATE_KEY: ", privateKey)
+// 	fmt.Println(privateKey)
 	
 	// Shared transport to reuse TCP connections.
 	tr := http.DefaultTransport
