@@ -8,12 +8,12 @@ env:
   go-version: 'stable'
   terraform-tflint-version: 'latest'
   
-  ECR_REPOSITORY: $
-  AWS_REGION: AWS_REGION 
-  ECS_SERVICE: ECS_SERVICE
-  ECS_CLUSTER: ECS_CLUSTER
-  ECS_TASK_DEFINITION: ECS_TASK_DEFINITION
-  CONTAINER_NAME: CONTAINER_NAME
+#   ECR_REPOSITORY: $
+#   AWS_REGION: AWS_REGION 
+#   ECS_SERVICE: ECS_SERVICE
+#   ECS_CLUSTER: ECS_CLUSTER
+#   ECS_TASK_DEFINITION: ECS_TASK_DEFINITION
+#   CONTAINER_NAME: CONTAINER_NAME
   
 permissions:
   contents: read
@@ -108,58 +108,58 @@ jobs:
   
   
   
-  deploy:
-    needs: scan
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      actions: write
+#   deploy:
+#     needs: scan
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       actions: write
       
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
         
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: $       
-          aws-region: $
-#           ${{ env.AWS_REGION }}
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v2
+#         with:
+#           role-to-assume: $       
+#           aws-region: $
+# #           ${{ env.AWS_REGION }}
       
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
+#       - name: Login to Amazon ECR
+#         uses: aws-actions/amazon-ecr-login@v1
       
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        env:
-          ECR_REGISTRY: $
-#           ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: $
-#           ${{ github.sha }}
-        run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+#       - name: Build, tag, and push image to Amazon ECR
+#         id: build-image
+#         env:
+#           ECR_REGISTRY: $
+# #           ${{ steps.login-ecr.outputs.registry }}
+#           IMAGE_TAG: $
+# #           ${{ github.sha }}
+#         run: |
+#           # Build a docker container and
+#           # push it to ECR so that it can
+#           # be deployed to ECS.
+#           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+#           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
           
-  # Do we need this?:      
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
+#   # Do we need this?:      
+#       - name: Fill in the new image ID in the Amazon ECS task definition
+#         id: task-def
+#         uses: aws-actions/amazon-ecs-render-task-definition@v1
+#         with:
+#           task-definition: ${{ env.ECS_TASK_DEFINITION }}
+#           container-name: ${{ env.CONTAINER_NAME }}
+#           image: ${{ steps.build-image.outputs.image }}
 
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+#       - name: Deploy Amazon ECS task definition
+#         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+#         with:
+#           task-definition: ${{ steps.task-def.outputs.task-definition }}
+#           service: ${{ env.ECS_SERVICE }}
+#           cluster: ${{ env.ECS_CLUSTER }}
+#           wait-for-service-stability: true
           
 #       - name: Install Helm Chart
 #         uses: bitovi/github-actions-deploy-eks-helm@v1.2.3
