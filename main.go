@@ -24,8 +24,8 @@ func main() {
 	appID, err := strconv.ParseInt(os.Getenv("APP_ID"), 10, 64)
 	installationID, err := strconv.ParseInt(os.Getenv("INSTALLATION_ID"), 10, 64)
 //     	privateKey := "./list-mg-repos.2023-04-05.private-key.pem"
-	privateKey := "private.pem"
-// 	privateKey := os.Getenv("PRIVATE_KEY")
+// 	privateKey := "private.pem"
+	privateKey := os.Getenv("PRIVATE_KEY")
 	fmt.Println("PRIVATE_KEY: ", privateKey)
 	fmt.Println("Private key contents:", privateKey)
 // 	fmt.Println(privateKey)
@@ -34,8 +34,8 @@ func main() {
 	tr := http.DefaultTransport
 
 	// Wrap the shared transport for use with the app ID 1 authenticating with installation ID 99.
-	itr, err := ghinstallation.NewKeyFromFile(tr, appID, installationID, privateKey)
-	// itr, err := ghinstallation.NewAppsTransportKeyFromFile(tr, appID, privateKey)
+// 	itr, err := ghinstallation.NewKeyFromFile(tr, appID, installationID, privateKey)
+	itr, err := ghinstallation.New(tr, appID, installationID, []byte(privateKey))
 
 	if err != nil {
 		log.Fatal(err)
