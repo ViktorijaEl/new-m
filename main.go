@@ -15,15 +15,15 @@ import (
 
 func main() {
 
-	err := godotenv.Load(".env")
-	if err != nil {
-		fmt.Println("Error loading .env file")
-		return
-	}
+// 	err := godotenv.Load(".env")
+// 	if err != nil {
+// 		fmt.Println("Error loading .env file")
+// 		return
+// 	}
 
 	appID, err := strconv.ParseInt(os.Getenv("APP_ID"), 10, 64)
 	installationID, err := strconv.ParseInt(os.Getenv("INSTALLATION_ID"), 10, 64)
-    privateKey := os.Getenv("PRIVATE_KEY")
+    	privateKey := os.Getenv("PRIVATE_KEY")
 
 	// Shared transport to reuse TCP connections.
 	tr := http.DefaultTransport
