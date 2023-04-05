@@ -10,35 +10,35 @@ import (
 
 	"github.com/bradleyfalzon/ghinstallation"
 	"github.com/google/go-github/github"
-// 	"github.com/joho/godotenv"
 )
 
 func main() {
 
-// 	err := godotenv.Load(".env")
-// 	if err != nil {
-// 		fmt.Println("Error loading .env file")
-// 		return
-// 	}
-
 	appID, err := strconv.ParseInt(os.Getenv("APP_ID"), 10, 64)
+	if err != nil {
+		log.Fatal("failed to parse APP_ID: ", err)
+	}
+
 	installationID, err := strconv.ParseInt(os.Getenv("INSTALLATION_ID"), 10, 64)
-//     	privateKey := "./list-mg-repos.2023-04-05.private-key.pem"
-// 	privateKey := "private.pem"
+	if err != nil {
+		log.Fatal("failed to parse INSTALLATION_ID: ", err)
+	}
+
 	privateKey := os.Getenv("PRIVATE_KEY")
+	if privateKey == "" {
+		log.Fatal("PRIVATE_KEY environment variable is not set")
+	}
+
 	fmt.Println("PRIVATE_KEY: ", privateKey)
-	fmt.Println("Private key contents:", privateKey)
-// 	fmt.Println(privateKey)
-	
+
 	// Shared transport to reuse TCP connections.
 	tr := http.DefaultTransport
 
 	// Wrap the shared transport for use with the app ID 1 authenticating with installation ID 99.
 	itr, err := ghinstallation.NewKeyFromFile(tr, appID, installationID, privateKey)
-	// itr, err := ghinstallation.NewAppsTransportKeyFromFile(tr, appID, privateKey)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("failed to create ghinstallation transport: ", err)
 	}
 
 	// Use installation transport with github.com/google/go-github
@@ -46,13 +46,13 @@ func main() {
 
 	repos, _, err := client.Apps.ListRepos(context.Background(), nil)
 	if err != nil {
-		panic(err)
+		log.Fatal("failed to list repos: ", err)
 	}
-	// fmt.Println(repos[0])
 
 	// Print the name of each repository
 	for _, repo := range repos {
 		fmt.Println(*repo.Name)
 	}
 }
+
 
