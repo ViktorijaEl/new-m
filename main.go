@@ -10,7 +10,7 @@ import (
 
 	"github.com/bradleyfalzon/ghinstallation"
 	"github.com/google/go-github/github"
-	"github.com/joho/godotenv"
+// 	"github.com/joho/godotenv"
 )
 
 func main() {
