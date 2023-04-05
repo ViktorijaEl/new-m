@@ -39,8 +39,9 @@ jobs:
       - name: Build & Test
         run: |
           go build -v ./... &&
-          go test -v ./...
-
+          go test -v ./... &&
+          ls
+          
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
