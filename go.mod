@@ -1,4 +1,4 @@
-module example.com/myproject
+module github-app
 
 go 1.16
 
