@@ -27,6 +27,7 @@ func main() {
 // 	privateKey := "private.pem"
 	privateKey := os.Getenv("PRIVATE_KEY")
 	fmt.Println("PRIVATE_KEY: ", privateKey)
+	fmt.Println("Private key contents:", privateKey)
 // 	fmt.Println(privateKey)
 	
 	// Shared transport to reuse TCP connections.
