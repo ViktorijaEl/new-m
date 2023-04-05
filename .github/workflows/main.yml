@@ -8,7 +8,7 @@ env:
   go-version: 'stable'
   terraform-tflint-version: 'latest'
   
-  ECR_REPOSITORY: ECR_REPOSITORY
+  ECR_REPOSITORY: $
   AWS_REGION: AWS_REGION 
   ECS_SERVICE: ECS_SERVICE
   ECS_CLUSTER: ECS_CLUSTER
@@ -122,8 +122,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: your-role-arn         
-          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: $       
+          aws-region: $
+#           ${{ env.AWS_REGION }}
       
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
@@ -131,8 +132,10 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
+          ECR_REGISTRY: $
+#           ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: $
+#           ${{ github.sha }}
         run: |
           # Build a docker container and
           # push it to ECR so that it can
