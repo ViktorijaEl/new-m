@@ -1,45 +1,35 @@
 package main
 
 import (
-    "fmt"
-    "net/http"
-    "net/http/httptest"
-    "testing"
+	"context"
+	"net/http"
     "net/url"
+	"net/http/httptest"
+	"testing"
 
-    "github.com/google/go-github/v33/github"
+	"github.com/google/go-github/github"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestGetRepositories(t *testing.T) {
-    // Create a test server with a mocked response
-    ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintln(w, `[{"name": "repo1"}, {"name": "repo2"}]`)
-    }))
-    defer ts.Close()
+func TestListRepos(t *testing.T) {
+	// Set up a test server with a sample response
+	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Assert that the correct URL is called
+		assert.Equal(t, "/app/installations/1/repositories", r.URL.String())
 
-    // Set up a GitHub client that uses the test server as its base URL
-    client := github.NewClient(nil)
-    baseURL := ts.URL + "/"
-    u, err := url.Parse(baseURL)
-    if err != nil {
-        t.Fatalf("error parsing URL: %v", err)
-    }
-    client.BaseURL = u
+		// Return a sample response
+		w.Write([]byte(`[{"name":"repo1"},{"name":"repo2"}]`))
+	}))
+	defer testServer.Close()
 
-    // Call the function being tested
-    repos, err := GetRepositories(client)
-    if err != nil {
-        t.Fatalf("error getting repositories: %v", err)
-    }
+	// Use the test server URL as the API base URL
+	client := github.NewClient(nil)
+	client.BaseURL = &testServer.URL
 
-    // Verify the results
-    if len(repos) != 2 {
-        t.Fatalf("expected 2 repositories, got %d", len(repos))
-    }
-    if repos[0].Name != "repo1" {
-        t.Errorf("expected first repository name to be repo1, got %s", repos[0].Name)
-    }
-    if repos[1].Name != "repo2" {
-        t.Errorf("expected second repository name to be repo2, got %s", repos[1].Name)
-    }
+	// Make the API request and assert that it returns the expected response
+	repos, _, err := client.Apps.ListRepos(context.Background(), nil)
+	assert.NoError(t, err)
+	assert.Len(t, repos, 2)
+	assert.Equal(t, "repo1", *repos[0].Name)
+	assert.Equal(t, "repo2", *repos[1].Name)
 }
