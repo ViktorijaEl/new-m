@@ -1,12 +1,16 @@
-package main
+package main_test
 
 import (
-	"context"
-	"strconv"
-	"testing"
+    "context"
+    "fmt"
+    "log"
+    "net/http"
+    "os"
+    "strconv"
+    "testing"
 
-	"github.com/bradleyfalzon/ghinstallation"
-	"github.com/google/go-github/github"
+    "github.com/bradleyfalzon/ghinstallation"
+    "github.com/google/go-github/github"
 )
 
 func TestRepositoriesList(t *testing.T) {
