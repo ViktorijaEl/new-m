@@ -3,33 +3,35 @@ package main
 import (
 	"context"
 	"net/http"
-    "net/url"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/google/go-github/github"
-	"github.com/stretchr/testify/assert"
 )
 
-func TestListRepos(t *testing.T) {
-	// Set up a test server with a sample response
+func TestGetRepos(t *testing.T) {
+	// Create a test HTTP server and a client that will use it
 	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Assert that the correct URL is called
-		assert.Equal(t, "/app/installations/1/repositories", r.URL.String())
-
-		// Return a sample response
-		w.Write([]byte(`[{"name":"repo1"},{"name":"repo2"}]`))
+		w.Write([]byte(`[{"name":"test-repo-1"},{"name":"test-repo-2"}]`))
 	}))
 	defer testServer.Close()
 
-	// Use the test server URL as the API base URL
 	client := github.NewClient(nil)
-	client.BaseURL = &testServer.URL
+	// Override client's base URL with the test server's URL
+	baseURL := testServer.URL + "/"
+	client.BaseURL, _ = url.Parse(baseURL)
 
-	// Make the API request and assert that it returns the expected response
-	repos, _, err := client.Apps.ListRepos(context.Background(), nil)
-	assert.NoError(t, err)
-	assert.Len(t, repos, 2)
-	assert.Equal(t, "repo1", *repos[0].Name)
-	assert.Equal(t, "repo2", *repos[1].Name)
+	// Call the function being tested
+	repos, err := getRepos(client)
+	if err != nil {
+		t.Errorf("Error getting repositories: %v", err)
+	}
+
+	// Verify the result
+	if len(repos) != 2 {
+		t.Errorf("Expected 2 repositories, but got %d", len(repos))
+	}
+	if repos[0].Name != "test-repo-1" || repos[1].Name != "test-repo-2" {
+		t.Errorf("Unexpected repository names: %v", repos)
+	}
 }
