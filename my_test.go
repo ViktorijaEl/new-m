@@ -2,10 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"log"
-	"net/http"
-	"os"
 	"strconv"
 	"testing"
 
@@ -13,15 +9,15 @@ import (
 	"github.com/google/go-github/github"
 )
 
-func TestMain(m *testing.M) {
+func TestRepositoriesList(t *testing.T) {
 	appID, err := strconv.ParseInt(os.Getenv("APP_ID"), 10, 64)
 	if err != nil {
-		log.Fatalf("error parsing APP_ID: %s", err)
+		t.Fatalf("error parsing APP_ID: %s", err)
 	}
 
 	installationID, err := strconv.ParseInt(os.Getenv("INSTALLATION_ID"), 10, 64)
 	if err != nil {
-		log.Fatalf("error parsing INSTALLATION_ID: %s", err)
+		t.Fatalf("error parsing INSTALLATION_ID: %s", err)
 	}
 
 	privateKey := os.Getenv("PRIVATE_KEY")
@@ -32,7 +28,7 @@ func TestMain(m *testing.M) {
 	// Wrap the shared transport for use with the app ID 1 authenticating with installation ID 99.
 	itr, err := ghinstallation.New(tr, appID, installationID, []byte(privateKey))
 	if err != nil {
-		log.Fatalf("error creating ghinstallation transport: %s", err)
+		t.Fatalf("error creating ghinstallation transport: %s", err)
 	}
 
 	// Use installation transport with github.com/google/go-github
@@ -42,11 +38,13 @@ func TestMain(m *testing.M) {
 	ctx := context.Background()
 	repos, _, err := client.Repositories.List(ctx, "", nil)
 	if err != nil {
-		log.Fatalf("error listing repositories: %s", err)
+		t.Fatalf("error listing repositories: %s", err)
 	}
 
-	// Print the name of each repository
-	for _, repo := range repos {
-		fmt.Println(*repo.Name)
+	// Check that the repositories list is not empty
+	if len(repos) == 0 {
+		t.Error("expected at least one repository, but got none")
 	}
+
+	// Add more test cases here as needed
 }
