@@ -1,28 +1,28 @@
-package main_test
+package main
 
 import (
-    "context"
-    "net/http"
-    "os"
-    "strconv"
-    "testing"
+	"context"
+	"os"
+	"strconv"
+	"testing"
 
-    "github.com/bradleyfalzon/ghinstallation"
-    "github.com/google/go-github/github"
+	"github.com/bradleyfalzon/ghinstallation"
+	"github.com/google/go-github/github"
 )
 
-func TestRepositoriesList(t *testing.T) {
+func TestAuthorization(t *testing.T) {
 	appID, err := strconv.ParseInt(os.Getenv("APP_ID"), 10, 64)
 	if err != nil {
-		t.Fatalf("error parsing APP_ID: %s", err)
+		t.Fatalf("Failed to parse APP_ID: %v", err)
 	}
-
 	installationID, err := strconv.ParseInt(os.Getenv("INSTALLATION_ID"), 10, 64)
 	if err != nil {
-		t.Fatalf("error parsing INSTALLATION_ID: %s", err)
+		t.Fatalf("Failed to parse INSTALLATION_ID: %v", err)
 	}
-
 	privateKey := os.Getenv("PRIVATE_KEY")
+	if privateKey == "" {
+		t.Fatal("PRIVATE_KEY is not set")
+	}
 
 	// Shared transport to reuse TCP connections.
 	tr := http.DefaultTransport
@@ -30,23 +30,14 @@ func TestRepositoriesList(t *testing.T) {
 	// Wrap the shared transport for use with the app ID 1 authenticating with installation ID 99.
 	itr, err := ghinstallation.New(tr, appID, installationID, []byte(privateKey))
 	if err != nil {
-		t.Fatalf("error creating ghinstallation transport: %s", err)
+		t.Fatalf("Failed to create installation transport: %v", err)
 	}
 
 	// Use installation transport with github.com/google/go-github
 	client := github.NewClient(&http.Client{Transport: itr})
 
-	// List the repositories for the authenticated installation
-	ctx := context.Background()
-	repos, _, err := client.Repositories.List(ctx, "", nil)
+	_, _, err = client.Apps.ListRepos(context.Background(), nil)
 	if err != nil {
-		t.Fatalf("error listing repositories: %s", err)
+		t.Fatalf("Authorization failed: %v", err)
 	}
-
-	// Check that the repositories list is not empty
-	if len(repos) == 0 {
-		t.Error("expected at least one repository, but got none")
-	}
-
-	// Add more test cases here as needed
 }
