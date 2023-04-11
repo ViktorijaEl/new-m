@@ -1,42 +1,50 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
+	"github.com/bradleyfalzon/ghinstallation"
 	"github.com/google/go-github/github"
 )
 
-func TestGetRepoName(t *testing.T) {
-	// Create a test HTTP server
+func TestListRepos(t *testing.T) {
+	// Set up a test server to receive the HTTP requests from the client
 	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`[{"name": "repo1"}, {"name": "repo2"}]`))
+		_, _ = w.Write([]byte(`[{"name": "repo1"}, {"name": "repo2"}]`))
 	}))
-
-	// Make sure the test server is closed when the test finishes
 	defer testServer.Close()
 
-	// Parse the test server URL
-	baseURL, err := url.Parse(testServer.URL)
-	if err != nil {
-		t.Fatalf("Failed to parse test server URL: %v", err)
-	}
+	// Use the test server URL as the base URL for the client
+	baseURL := testServer.URL + "/"
 
-	// Create a new GitHub client using the test server URL
-	client := github.NewClient(nil)
+	// Set up a client with a transport that uses the test server URL
+	tr := http.DefaultTransport
+	itr, err := ghinstallation.New(tr, 1, 99, []byte(os.Getenv("PRIVATE_KEY")))
+	if err != nil {
+		t.Fatal(err)
+	}
+	client := github.NewClient(&http.Client{Transport: itr})
 	client.BaseURL = baseURL
 
-	// Call the function being tested
-	repoNames, err := GetRepoNames(client)
+	// Call the ListRepos method on the client
+	repos, _, err := client.Apps.ListRepos(context.Background(), nil)
 	if err != nil {
-		t.Fatalf("Failed to get repo names: %v", err)
+		t.Fatal(err)
 	}
 
-	// Check the results
-	expected := []string{"repo1", "repo2"}
-	if !reflect.DeepEqual(repoNames, expected) {
-		t.Errorf("Expected repo names %v, but got %v", expected, repoNames)
+	// Verify that the returned repositories have the expected names
+	if len(repos) != 2 {
+		t.Fatalf("expected 2 repositories, got %d", len(repos))
+	}
+	if *repos[0].Name != "repo1" {
+		t.Errorf("expected first repository name to be 'repo1', got '%s'", *repos[0].Name)
+	}
+	if *repos[1].Name != "repo2" {
+		t.Errorf("expected second repository name to be 'repo2', got '%s'", *repos[1].Name)
 	}
 }
