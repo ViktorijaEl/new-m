@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"testing"
+	"net/http"
 
 	"github.com/bradleyfalzon/ghinstallation"
 	"github.com/google/go-github/github"
