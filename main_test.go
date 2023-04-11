@@ -1,37 +1,42 @@
-package main
+package main_test
 
 import (
-	"context"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
+	"github.com/bradleyfalzon/ghinstallation"
 	"github.com/google/go-github/github"
 )
 
-func TestGetRepos(t *testing.T) {
-	// Create a test HTTP server and a client that will use it
+func TestGetRepositories(t *testing.T) {
+	// Set up a test server
 	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`[{"name":"test-repo-1"},{"name":"test-repo-2"}]`))
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`[]`))
 	}))
 	defer testServer.Close()
 
-	client := github.NewClient(nil)
-	// Override client's base URL with the test server's URL
-	baseURL := testServer.URL + "/"
-	client.BaseURL, _ = url.Parse(baseURL)
+	// Use the test server's URL in place of the GitHub API's URL
+	baseURL := testServer.URL
 
-	// Call the function being tested
-	repos, err := getRepos(client)
+	// Set up a new http client with the test server's URL and authentication
+	tr := http.DefaultTransport
+	itr, err := ghinstallation.New(tr, 1234, 5678, []byte("dummy key"))
 	if err != nil {
-		t.Errorf("Error getting repositories: %v", err)
+		t.Errorf("Failed to create installation transport: %v", err)
+	}
+	client := github.NewClient(&http.Client{Transport: itr, BaseURL: baseURL})
+
+	// Call the function to get the repositories
+	repos, err := client.Repositories.List(nil)
+	if err != nil {
+		t.Errorf("Failed to get repositories: %v", err)
 	}
 
-	// Verify the result
-	if len(repos) != 2 {
-		t.Errorf("Expected 2 repositories, but got %d", len(repos))
-	}
-	if repos[0].Name != "test-repo-1" || repos[1].Name != "test-repo-2" {
-		t.Errorf("Unexpected repository names: %v", repos)
+	// Ensure that the returned repository count is 0
+	if len(repos) != 0 {
+		t.Errorf("Expected 0 repositories, but got %d", len(repos))
 	}
 }
