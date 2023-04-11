@@ -4,44 +4,40 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
-	"github.com/bradleyfalzon/ghinstallation"
 	"github.com/google/go-github/github"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestListRepos(t *testing.T) {
-
-	appID := int64(12345)
-	installationID := int64(67890)
-	privateKey := os.Getenv("PRIVATE_KEY")
-
-	// Create a test server to mock the GitHub API responses
+	// Create a test server with a mocked response
 	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`[{"name":"test-repo"}]`))
+		// Check that the correct API endpoint is being called
+		if r.URL.Path != "/app/installations/123/repositories" {
+			t.Errorf("unexpected request path: %s", r.URL.Path)
+		}
+		// Return a JSON response with one repository
+		w.Write([]byte(`[{"id": 1, "name": "repo1"}]`))
 	}))
 	defer testServer.Close()
 
-	// Use the test server URL for the GitHub API endpoint
-	client := github.NewClient(&http.Client{})
+	// Create a new GitHub client that uses the test server as the HTTP transport
+	client := github.NewClient(nil)
 	client.BaseURL = testServer.URL + "/"
 
-	// Wrap the shared transport for use with the app ID 1 authenticating with installation ID 99.
-	itr, err := ghinstallation.New(http.DefaultTransport, appID, installationID, []byte(privateKey))
-	if err != nil {
-		t.Fatal(err)
-	}
-	client.Transport = itr
+	// Set the client to use the test server's transport
+	client.SetDo(func(req *http.Request) (*http.Response, error) {
+		req.URL.Scheme = testServer.URL
+		req.URL.Host = ""
+		return http.DefaultTransport.RoundTrip(req)
+	})
 
+	// Call the ListRepos function and check the result
 	repos, _, err := client.Apps.ListRepos(context.Background(), nil)
 	if err != nil {
-		t.Fatal(err)
+		t.Errorf("unexpected error: %v", err)
 	}
-
-	// Assert that the list of repositories contains the expected repository name
-	assert.Equal(t, "test-repo", *repos[0].Name)
+	if len(repos) != 1 || *repos[0].Name != "repo1" {
+		t.Errorf("unexpected repos: %v", repos)
+	}
 }
