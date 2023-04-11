@@ -38,9 +38,11 @@ jobs:
 
       - name: write key
         run: echo "${{ secrets.PRIVATE_KEY }}" > private.pem
-        
-      - name: Build & Test
+
+      
+      - name: Build & Test 
         run: |
+          go clean -modcache &&
           go build -v ./... &&
           go test -v ./... &&
           ./github-app
