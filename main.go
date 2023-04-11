@@ -15,11 +15,14 @@ import (
 
 func main() {
 
-// 	err := godotenv.Load(".env")
-// 	if err != nil {
-// 		fmt.Println("Error loading .env file")
-// 		return
-// 	}
+	// for local development, if statement checks if WSL_DISTRO_NAME=Ubuntu, then load env vars from .env file
+	if os.Getenv("WSL_DISTRO_NAME") == "Ubuntu" {
+		err := godotenv.Load(".env")
+		if err != nil {
+			fmt.Println("Error loading .env file")
+			return
+		}
+	}
 
 	appID, err := strconv.ParseInt(os.Getenv("APP_ID"), 10, 64)
 	installationID, err := strconv.ParseInt(os.Getenv("INSTALLATION_ID"), 10, 64)
