@@ -12,7 +12,7 @@ import (
 	"github.com/google/go-github/github"
 )
 
-func main() {
+func TestMain() {
 	appID, err := strconv.ParseInt(os.Getenv("APP_ID"), 10, 64)
 	if err != nil {
 		log.Fatalf("error parsing APP_ID: %s", err)
