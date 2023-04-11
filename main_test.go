@@ -1,44 +1,42 @@
 package main
 
 import (
-	"context"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
-	"github.com/bradleyfalzon/ghinstallation"
 	"github.com/google/go-github/github"
 )
 
-func TestListRepos(t *testing.T) {
-	// Setup test server
+func TestGetRepoName(t *testing.T) {
+	// Create a test HTTP server
 	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`[]`))
+		w.Write([]byte(`[{"name": "repo1"}, {"name": "repo2"}]`))
 	}))
+
+	// Make sure the test server is closed when the test finishes
 	defer testServer.Close()
 
-	// Use test server URL as base URL for client
-	baseURL := testServer.URL + "/"
-
-	// Create client
-	tr := http.DefaultTransport
-	itr, err := ghinstallation.New(tr, 1, 99, []byte(os.Getenv("PRIVATE_KEY")))
+	// Parse the test server URL
+	baseURL, err := url.Parse(testServer.URL)
 	if err != nil {
-		t.Fatalf("Failed to create installation transport: %v", err)
+		t.Fatalf("Failed to parse test server URL: %v", err)
 	}
-	client := github.NewClient(&http.Client{Transport: itr})
+
+	// Create a new GitHub client using the test server URL
+	client := github.NewClient(nil)
 	client.BaseURL = baseURL
 
-	// Make request
-	repos, _, err := client.Apps.ListRepos(context.Background(), nil)
+	// Call the function being tested
+	repoNames, err := GetRepoNames(client)
 	if err != nil {
-		t.Fatalf("Failed to list repos: %v", err)
+		t.Fatalf("Failed to get repo names: %v", err)
 	}
 
-	// Check response
-	if len(repos) != 0 {
-		t.Fatalf("Expected 0 repos, but got %d", len(repos))
+	// Check the results
+	expected := []string{"repo1", "repo2"}
+	if !reflect.DeepEqual(repoNames, expected) {
+		t.Errorf("Expected repo names %v, but got %v", expected, repoNames)
 	}
 }
