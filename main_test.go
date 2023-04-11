@@ -5,6 +5,7 @@ import (
     "net/http"
     "net/http/httptest"
     "testing"
+    "net/url"
 
     "github.com/google/go-github/v33/github"
 )
