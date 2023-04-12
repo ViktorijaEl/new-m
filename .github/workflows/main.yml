@@ -5,7 +5,7 @@ on:
   
 env:
   CODEQL_RESULTS_PATH: ${{ github.workspace }}
-  go-version: 'stable'
+  go-version: '1.20.1'
   terraform-tflint-version: 'latest'
   
 #   ECR_REPOSITORY: $
