@@ -20,7 +20,11 @@ jobs:
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
 
+      - name: Change to terraform directory
+        run: cd terraform
+
       - uses: hashicorp/setup-terraform@v2
+
       - name: Terraform fmt
         run: terraform fmt -check
         continue-on-error: true
@@ -32,13 +36,13 @@ jobs:
         run: terraform validate -no-color
 
       - name: Terraform plan
-        run: cd terraform && terraform plan -out=plan.tfplan
+        run: terraform plan -out=../plan.tfplan
 
       - name: Upload Terraform Plan
         uses: actions/upload-artifact@v2
         with:
           name: plan
-          path: plan.tfplan
+          path: ../plan.tfplan
 
   approval:
     runs-on: ubuntu-latest
@@ -54,4 +58,4 @@ jobs:
         if: steps.approval.outputs.approved == 'true'
         run: |
           cd terraform
-          terraform apply plan.tfplan
+          terraform apply ../plan.tfplan
