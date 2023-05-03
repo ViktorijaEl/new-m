@@ -1,19 +1,22 @@
-################################
-# Create Storage Bucket - Main #
-################################
-
-# Define the bucket module
-module "bucket" {
-  source = "./bucket"
-
-  # Pass variables to the bucket module
-  gcp_project   = var.gcp_project
-  bucket-name   = var.bucket-name
-  gcp_region    = var.gcp_region
-  gcp_zone      = var.gcp_zone
-  storage-class = var.storage-class 
+provider "google" {
+  project = "dev-infra-380007"
+  region  = "eu"
 }
 
-################################
-   
-    
+resource "google_storage_bucket" "tf-bucket" {
+  project       = "dev-infra-380007"
+  name          = "buketdfndjkfj"
+  location      = "eu"
+  force_destroy = true
+  public_access_prevention = "enforced"
+  uniform_bucket_level_access = true
+  storage_class = "Standard" 
+
+  versioning {
+    enabled = true
+  }
+
+  logging {
+    log_bucket = "dev-github-terraform"
+  }
+}
