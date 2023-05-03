@@ -1,0 +1,35 @@
+name: approve-sns-pipeline
+on:
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.9
+      - name: Terraform validate
+        run: terraform validate
+      - name: Terraform plan
+        run: terraform plan -out=plan.tfplan
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v2
+		with:
+          name: plan
+          path: plan.tfplan
+
+  manual-approval:
+    runs-on: ubuntu-latest
+    needs: actions_template_v1
+    steps:
+      - name: Manual Approval
+        id: approval
+        uses: peter-evans/manual-approval@v2
+        with:
+          comment: Please review and approve this Terraform plan
+      - name: Terraform Apply
+        if: steps.approval.outputs.approved == 'true'
+        run: terraform apply plan.tfplan
