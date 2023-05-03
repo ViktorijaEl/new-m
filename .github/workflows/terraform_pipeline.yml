@@ -5,10 +5,14 @@ permissions:
   security-events: write
 
 on:
-  workflow_run:
-    workflows: ["actions_template_v1"]
-    types:
-      - completed
+  repository_dispatch:
+      inputs: 
+      actions_template_v1:
+        description: 'Workflow2 Name for Triggering'
+        required: true
+        default: 'actions_template_v1'
+        types:
+          - completed
 
 jobs:
   terraform:
