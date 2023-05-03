@@ -1,8 +1,8 @@
-name: manual-approval
+name: Manual Approval
 
 on:
   workflow_run:
-    workflows: ["Workflow 1"]
+    workflows: [Workflow 1]
     types:
       - completed
 
@@ -17,19 +17,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Change to terraform directory
-        run: |
-          pwd
-          cd terraform
-          pwd
-
       - name: Terraform Init
-        uses: hashicorp/setup-terraform@v1
-        with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        working-directory: terraform
+        run: terraform init
 
-      - name: Terraform Apply
-        run: cd terraform && terraform apply ../plan.tfplan
+      - name: Terraform Plan
+        working-directory: terraform
+        run: terraform plan -out=plan.tfplan
 
   approval:
     runs-on: ubuntu-latest
