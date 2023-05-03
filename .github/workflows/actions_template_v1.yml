@@ -90,6 +90,7 @@ jobs:
         continue-on-error: true
         
       - name: Terraform Init
+        working-directory: terraform
         run: terraform init
         
       - name: Terraform Plan
