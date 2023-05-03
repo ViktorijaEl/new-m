@@ -21,7 +21,10 @@ jobs:
         uses: bridgecrewio/checkov-action@master
 
       - name: Change to terraform directory
-        run: cd terraform
+        run: |
+          pwd
+          cd terraform
+          pwd
 
       - uses: hashicorp/setup-terraform@v2
 
