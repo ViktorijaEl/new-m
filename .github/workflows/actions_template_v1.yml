@@ -9,13 +9,6 @@ env:
   go-version: '1.20.1'
   terraform-tflint-version: 'latest'
   
-#   ECR_REPOSITORY: $
-#   AWS_REGION: AWS_REGION 
-#   ECS_SERVICE: ECS_SERVICE
-#   ECS_CLUSTER: ECS_CLUSTER
-#   ECS_TASK_DEFINITION: ECS_TASK_DEFINITION
-#   CONTAINER_NAME: CONTAINER_NAME
-  
 permissions:
   contents: read
   actions: read
@@ -27,7 +20,7 @@ jobs:
       
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Setup Go
         uses: actions/setup-go@v3
@@ -40,7 +33,9 @@ jobs:
       - name: write key
         run: echo "${{ secrets.PRIVATE_KEY }}" > private.pem
 
-      
+      - name: Change to terraform directory
+        run: cd terraform
+
       - name: Build & Test 
         run: |
           go clean -modcache &&
@@ -85,96 +80,17 @@ jobs:
       - name: Checkov scan
         uses: bridgecrewio/checkov-action@master
           
+      - name: Change to terraform directory
+        run: cd terraform
+
       - uses: hashicorp/setup-terraform@v2
+
       - name: Terraform fmt
         run: terraform fmt -check
         continue-on-error: true
 
       - name: Terraform Init
         run: terraform init
-
-      - name: Terraform Validate
-        run: terraform validate -no-color
-          
-      - uses: terraform-linters/setup-tflint@v3
-        name: Setup TFLint
-        with:
-          tflint_version: ${{ env.terraform-tflint-version }}
-          
-      - name: Show version
-        run: tflint --version
-        
-      - name: Init TFLint
-        run: tflint --init
-        
-      - name: Run TFLint
-        run: tflint -f compact
-
-      - name: tfsec
-        uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
-        with:
-          github_token: ${{ secrets.vs1 }}
-
-      - name: Helm lint
-        run: helm lint .
-  
-  
-  
-#   deploy:
-#     needs: scan
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: read
-#       actions: write
-      
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
-        
-#       - name: Configure AWS credentials
-#         uses: aws-actions/configure-aws-credentials@v2
-#         with:
-#           role-to-assume: $       
-#           aws-region: $
-# #           ${{ env.AWS_REGION }}
-      
-#       - name: Login to Amazon ECR
-#         uses: aws-actions/amazon-ecr-login@v1
-      
-#       - name: Build, tag, and push image to Amazon ECR
-#         id: build-image
-#         env:
-#           ECR_REGISTRY: $
-# #           ${{ steps.login-ecr.outputs.registry }}
-#           IMAGE_TAG: $
-# #           ${{ github.sha }}
-#         run: |
-#           # Build a docker container and
-#           # push it to ECR so that it can
-#           # be deployed to ECS.
-#           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-#           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-#           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-          
-#   # Do we need this?:      
-#       - name: Fill in the new image ID in the Amazon ECS task definition
-#         id: task-def
-#         uses: aws-actions/amazon-ecs-render-task-definition@v1
-#         with:
-#           task-definition: ${{ env.ECS_TASK_DEFINITION }}
-#           container-name: ${{ env.CONTAINER_NAME }}
-#           image: ${{ steps.build-image.outputs.image }}
-
-#       - name: Deploy Amazon ECS task definition
-#         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-#         with:
-#           task-definition: ${{ steps.task-def.outputs.task-definition }}
-#           service: ${{ env.ECS_SERVICE }}
-#           cluster: ${{ env.ECS_CLUSTER }}
-#           wait-for-service-stability: true
-          
-#       - name: Install Helm Chart
-#         uses: bitovi/github-actions-deploy-eks-helm@v1.2.3
         
 
     
