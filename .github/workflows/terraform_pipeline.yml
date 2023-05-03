@@ -20,7 +20,7 @@ jobs:
       - name: Terraform validate
         run: cd terraform && terraform validate
       - name: Terraform plan
-        run: terraform plan -out=plan.tfplan
+        run: cd terraform && terraform plan -out=plan.tfplan
       - name: Upload Terraform Plan
         uses: actions/upload-artifact@v2
         with:
