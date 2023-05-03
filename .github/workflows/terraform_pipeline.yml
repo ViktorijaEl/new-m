@@ -18,7 +18,7 @@ jobs:
         with:
           terraform_version: 1.0.9
       - name: Terraform validate
-        run: terraform validate
+        run: cd terraform && terraform validate
       - name: Terraform plan
         run: terraform plan -out=plan.tfplan
       - name: Upload Terraform Plan
