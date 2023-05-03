@@ -1,9 +1,16 @@
-provider "aws" {
-  region = "us-west-2"
+################################
+# Create Storage Bucket - Main #
+################################
+
+# Define the bucket module
+module "bucket" {
+  source = "./bucket"
+
+  # Pass variables to the bucket module
+  gcp_project   = var.gcp_project
+  bucket-name   = var.bucket-name
+  gcp_region    = var.gcp_region
+  gcp_zone      = var.gcp_zone
+  storage-class = var.storage-class 
 }
 
-data "aws_s3_buckets" "all" {}
-
-output "s3_bucket_names" {
-  value = data.aws_s3_buckets.all.buckets[*].id
-}
