@@ -5,11 +5,8 @@ name: manual-approval
 #   security-events: write
 
 on:
-  workflow_run:
-    workflows: ["Workflow 1"]
-    branches: [main]
-    types:
-      - completed
+  repository_dispatch:
+      types: [ Workflow 1 ]
 
 jobs:
   terraform:
