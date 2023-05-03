@@ -1,14 +1,15 @@
+name: manual-approval
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+
 on:
   workflow_run:
     workflows: ["actions_template_v1"]
     types:
       - completed
 
-name: manual-approval
-permissions:
-  contents: read
-  actions: read
-  security-events: write
 jobs:
   terraform:
     runs-on: ubuntu-latest
