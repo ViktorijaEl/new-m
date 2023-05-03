@@ -1,19 +1,19 @@
-# Create a GCS Bucket
-resource "google_storage_bucket" "tf-bucket" {
-  project       = var.gcp_project
-  name          = var.bucket-name
-  location      = var.gcp_region
-  force_destroy = true
-  public_access_prevention = "enforced"
-  uniform_bucket_level_access = true
-  storage_class = var.storage-class  
+################################
+# Create Storage Bucket - Main #
+################################
 
-  versioning {
-    enabled = true
-  }
+# Define the bucket module
+module "bucket" {
+  source = "./bucket"
 
-  logging {
-    log_bucket = "dev-github-terraform"
-  }
+  # Pass variables to the bucket module
+  gcp_project   = var.gcp_project
+  bucket-name   = var.bucket-name
+  gcp_region    = var.gcp_region
+  gcp_zone      = var.gcp_zone
+  storage-class = var.storage-class 
 }
 
+################################
+   
+    
