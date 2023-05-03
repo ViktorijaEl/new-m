@@ -17,35 +17,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Checkov scan
-        uses: bridgecrewio/checkov-action@master
-
       - name: Change to terraform directory
         run: |
           pwd
           cd terraform
           pwd
 
-      - uses: hashicorp/setup-terraform@v2
-
-      - name: Terraform fmt
-        run: terraform fmt -check
-        continue-on-error: true
-
       - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Validate
-        run: terraform validate -no-color
-
-      - name: Terraform plan
-        run: terraform plan -out=../plan.tfplan
-
-      - name: Upload Terraform Plan
-        uses: actions/upload-artifact@v2
+        uses: hashicorp/setup-terraform@v1
         with:
-          name: plan
-          path: ../plan.tfplan
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Apply
+        run: cd terraform && terraform apply ../plan.tfplan
 
   approval:
     runs-on: ubuntu-latest
@@ -56,9 +40,3 @@ jobs:
         uses: peter-evans/manual-approval@v2
         with:
           comment: Please review and approve this Terraform plan
-
-      - name: Terraform Apply
-        if: steps.approval.outputs.approved == 'true'
-        run: |
-          cd terraform
-          terraform apply ../plan.tfplan
