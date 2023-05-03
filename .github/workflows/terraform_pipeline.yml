@@ -6,7 +6,7 @@ permissions:
 
 on:
   workflow_run:
-    workflows: ["actions_template_v1.yml"]
+    workflows: ["Workflow 1"]
     branches: [main]
     types:
       - completed
