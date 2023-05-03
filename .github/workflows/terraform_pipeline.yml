@@ -1,8 +1,8 @@
 name: manual-approval
-permissions:
-  contents: read
-  actions: read
-  security-events: write
+# permissions:
+#   contents: read
+#   actions: read
+#   security-events: write
 
 on:
   workflow_run:
