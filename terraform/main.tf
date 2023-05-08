@@ -90,7 +90,7 @@ resource "aws_security_group" "example" {
 resource "aws_docdb_cluster" "example" {
   cluster_identifier          = "example-cluster"
   engine                      = "docdb"
-  kms_master_key_id           = var.kms_master_key_id
+  kms_key_id                  = var.kms_master_key_id
   storage_encrypted           = true
   master_username             = "admin"
   master_password             = "password"
