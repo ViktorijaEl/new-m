@@ -65,18 +65,11 @@ resource "aws_security_group" "example" {
   vpc_id      = data.aws_vpc.example.id
 
   ingress {
-    from_port   = 0
-    to_port     = 27017
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow DocumentDB traffic from all IP addresses"
-  }
-  ingress {
     from_port   = 3389
     to_port     = 3389
     protocol    = "tcp"
-    cidr_blocks = ["x.x.x.x/32"] # replace x.x.x.x with the IP address you want to allow RDP traffic from
-    description = "Allow RDP traffic from specific IP addresses only"
+    cidr_blocks = ["10.0.0.0/24"] 
+    description = "The issue is the CIDR specified in the ingress control rule"
   }  
   ingress {
     from_port   = 3389
