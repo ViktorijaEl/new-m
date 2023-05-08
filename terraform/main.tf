@@ -97,4 +97,5 @@ resource "aws_docdb_cluster" "example" {
   skip_final_snapshot         = true
   backup_retention_period     = 7
   preferred_backup_window     = "01:00-02:00"
+  enabled_log_types           = ["audit", "profiler"]
 }
