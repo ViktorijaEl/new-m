@@ -90,6 +90,7 @@ resource "aws_security_group" "example" {
 resource "aws_docdb_cluster" "example" {
   cluster_identifier          = "example-cluster"
   engine                      = "docdb"
+  kms_master_key_id           = var.kms_master_key_id
   master_username             = "admin"
   master_password             = "password"
   db_subnet_group_name        = aws_db_subnet_group.example.name
