@@ -77,7 +77,8 @@ resource "aws_security_group" "example" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Deny RDP traffic from all IP addresses"
-  }  
+    self        = false
+  }
   egress {
     from_port   = 0
     to_port     = 0
