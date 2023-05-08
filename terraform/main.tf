@@ -60,6 +60,14 @@ resource "aws_db_subnet_group" "example" {
   subnet_ids = [aws_subnet.example.id]
 }
 # Create security group for the DocumentDB cluster
+resource "aws_security_group_rule" "http_ingress" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["10.0.0.0/24"]
+  security_group_id = aws_security_group.example.id
+}
 resource "aws_security_group" "example" {
   name_prefix = "example-"
   vpc_id      = data.aws_vpc.example.id
@@ -69,12 +77,14 @@ resource "aws_security_group" "example" {
     to_port     = 27017
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow DocumentDB traffic from all IP addresses"
     }
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
   }
 }
 # Create the DocumentDB cluster
