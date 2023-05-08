@@ -75,9 +75,15 @@ resource "aws_security_group" "example" {
     from_port   = 3389
     to_port     = 3389
     protocol    = "tcp"
+    cidr_blocks = ["x.x.x.x/32"] # replace x.x.x.x with the IP address you want to allow RDP traffic from
+    description = "Allow RDP traffic from specific IP addresses only"
+  }  
+  ingress {
+    from_port   = 3389
+    to_port     = 3389
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Deny RDP traffic from all IP addresses"
-    self        = false
   }
   egress {
     from_port   = 0
