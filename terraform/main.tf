@@ -20,10 +20,20 @@
 #     log_bucket = "dev-github-terraform"
 #   }
 # }
+locals {
+  access_key_secret = jsondecode(data.aws_secretsmanager_secret_version.access_keys.secret_string)["access_key"]
+  secret_key_secret = jsondecode(data.aws_secretsmanager_secret_version.access_keys.secret_string)["secret_key"]
+}
+data "aws_secretsmanager_secret_version" "access_keys" {
+  secret_id = var.secret_id
+}
+
 provider "aws" {
   region = var.region
-  access_key = var.access_key
-  secret_key = var.secret_key
+  access_key = local.access_key_secret
+  secret_key = local.secret_key_secret
+#   access_key = var.access_key
+#   secret_key = var.secret_key
   assume_role {
     role_arn = var.role_arn
   }
