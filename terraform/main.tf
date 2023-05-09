@@ -43,9 +43,6 @@ resource "aws_sns_topic_subscription" "ghec_subscription" {
 
 # DocumentDB
 # Create a new VPC for the DocumentDB cluster
-# resource "aws_vpc" "example" {
-#   cidr_block = "10.0.0.0/16"
-# }
 data "aws_vpc" "example" {
   id = "vpc-06329d9e801d00819"
 }
@@ -74,14 +71,14 @@ resource "aws_security_group" "example" {
     from_port   = 3389
     to_port     = 3389
     protocol    = "tcp"
-    cidr_blocks = ["10.87.52.0/25"] 
+    cidr_blocks = ["10.87.52.0/26"] 
     description = "The issue is the CIDR specified in the ingress control rule"
   }  
   ingress {
       from_port   = 80
       to_port     = 80
       protocol    = "tcp"
-      cidr_blocks = ["10.87.52.0/25"]
+      cidr_blocks = ["10.87.52.0/26"]
       description = "Allow traffic to port 80 from a specific IP address"
   }
   egress {
