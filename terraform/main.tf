@@ -77,6 +77,13 @@ resource "aws_security_group" "example" {
     cidr_blocks = ["10.87.52.0/25"] 
     description = "The issue is the CIDR specified in the ingress control rule"
   }  
+  ingress {
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_blocks = ["10.87.52.0/25"]
+      description = "Allow traffic to port 80 from a specific IP address"
+  }
   egress {
     from_port   = 0
     to_port     = 0
