@@ -64,7 +64,17 @@ jobs:
         with:
           name: codeql-results
           path: ${{ env.CODEQL_RESULTS_PATH }}
+          
+      - name: Generate Terraform Docs
+        run: |
+          terraform init
+          terraform-docs markdown . > README.md
 
+      - name: Update README file
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "${{ github.actor }}"
+          git diff --exit-code --quiet || git commit -a -m "Update README"
   scan:
     needs: build     
     runs-on: ubuntu-latest
