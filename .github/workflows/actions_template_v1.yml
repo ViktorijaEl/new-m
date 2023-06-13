@@ -66,9 +66,9 @@ jobs:
           path: ${{ env.CODEQL_RESULTS_PATH }}
           
       - name: Generate Terraform Docs
-        uses: terraform-docs/gh-actions@latest
+        uses: terraform-docs/gh-actions@v1.0.0
         with:
-          output-file: README.md
+          working-dir: terraform
       
       - name: Commit changes
         run: |
