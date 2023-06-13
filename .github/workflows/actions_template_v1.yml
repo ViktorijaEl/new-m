@@ -70,11 +70,16 @@ jobs:
         with:
           working-dir: terraform
       
+      - name: Configure Git
+        run: |
+          git config --local user.email "your-email@example.com"
+          git config --local user.name "${{ github.actor }}"
+          git config --local pull.rebase false
+          
       - name: Commit changes
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git diff --exit-code --quiet || git commit -a -m "Update README"
+          git add .
+          git diff-index --quiet HEAD || git commit -m "Update README"
           git push
   scan:
     needs: build     
