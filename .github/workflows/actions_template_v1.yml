@@ -67,7 +67,7 @@ jobs:
           
       - name: Generate Terraform Docs
         run: |
-          terraform init
+          cd terraform && terraform init
           terraform-docs markdown . > README.md
 
       - name: Update README file
