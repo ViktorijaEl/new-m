@@ -1,0 +1,19 @@
+name: Terraform Check
+
+on:
+  schedule:
+    - cron: "0 11 * * *"
+
+jobs:
+  terraform-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+      
+      - name: Validate Terraform files
+        run: terraform validate
