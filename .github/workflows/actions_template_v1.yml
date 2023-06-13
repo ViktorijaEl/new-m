@@ -66,15 +66,16 @@ jobs:
           path: ${{ env.CODEQL_RESULTS_PATH }}
           
       - name: Generate Terraform Docs
-        run: |
-          cd terraform && terraform init
-          terraform-docs markdown . > README.md
-
-      - name: Update README file
+        uses: terraform-docs/gh-actions@v0.15.0
+        with:
+          output-file: README.md
+      
+      - name: Commit changes
         run: |
           git config --local user.email "action@github.com"
-          git config --local user.name "${{ github.actor }}"
+          git config --local user.name "GitHub Action"
           git diff --exit-code --quiet || git commit -a -m "Update README"
+          git push
   scan:
     needs: build     
     runs-on: ubuntu-latest
