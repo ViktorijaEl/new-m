@@ -65,22 +65,13 @@ jobs:
           name: codeql-results
           path: ${{ env.CODEQL_RESULTS_PATH }}
           
-      - name: Generate Terraform Docs
+      - name: Render terraform docs inside the README.md and push changes back to PR branch
         uses: terraform-docs/gh-actions@v1.0.0
         with:
           working-dir: terraform
-      
-      - name: Configure Git
-        run: |
-          git config --local user.email "viktorija.springe@gmail.com"
-          git config --local user.name "ViktorijaEl"
-          git config --local pull.rebase false
-          
-      - name: Commit changes
-        run: |
-          git add .
-          git diff-index --quiet HEAD || git commit -m "Update README"
-          git push
+          output-file: README.md
+          output-method: inject
+          git-push: "true"
   scan:
     needs: build     
     runs-on: ubuntu-latest
