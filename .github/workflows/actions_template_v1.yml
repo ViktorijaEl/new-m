@@ -1,8 +1,8 @@
 name: Workflow 1
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+on: 
+  pull_request
+    
+#   workflow_dispatch:
   
 env:
   CODEQL_RESULTS_PATH: ${{ github.workspace }}
